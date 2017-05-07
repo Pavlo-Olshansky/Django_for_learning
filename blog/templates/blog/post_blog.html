@@ -1,0 +1,12 @@
+{% extends 'home/header.html' %}
+{% block content %}
+<p>HELOOOO</p>
+{% for blog in object_list %}
+    <h5>{{ blog.time|date:'Y-m-d' }} : 
+    <a href='/blog/{{blog.id}}'>{{blog.title}}</a></h5>
+{% endfor %}
+
+{#{% for image in post_blog_list %}#}
+{#    <p>blah {{ image.time }}</p>>#}
+{#{% endfor %}#}
+{% endblock %}

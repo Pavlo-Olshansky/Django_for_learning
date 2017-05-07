@@ -1,0 +1,9 @@
+{% extends "contact/header_contact.html" %}
+{% block content %}
+{% for textblock in content %}
+    {% for text in textblock %}
+        <pre>{{text}}</pre>
+    {% endfor %}
+{% endfor %}
+
+{% endblock %}

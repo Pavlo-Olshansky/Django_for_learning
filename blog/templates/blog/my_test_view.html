@@ -1,0 +1,27 @@
+{% extends "home/header.html" %}
+
+{% load cache %}
+{% cache 500 content %}
+{% block content %}
+    <h2>You are not logged. Not logined count: {{ count }}</h2>
+
+    <p>{{ message }}</p>
+    <p><a href="/blog/my_view_choose">Choose another block</a></p>
+    <p>Available posts:</p>
+    {% for one_post in posts %}
+        <p>{{ one_post }}</p>
+    {% endfor %}
+
+{##}
+{#  <form action="" method="post">#}
+{#    <label for="username">User name:</label>#}
+{#    <input type="text" name="username" value="" id="username">#}
+{#    <label for="password">Password:</label>#}
+{#    <input type="password" name="password" value="" id="password">#}
+{##}
+{#    <input type="submit" value="login" />#}
+{#    <input type="hidden" name="next" value="{{ next|escape }}" />#}
+{#  </form>#}
+
+{% endblock %}
+{% endcache %}

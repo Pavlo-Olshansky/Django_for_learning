@@ -1,0 +1,9 @@
+{% extends "home/header.html" %}
+
+{% block content %}
+
+<p> A special thanks to Death to the Stock Photo for providing the photographs that you see in this template.
+    Visit their website to become a member. </p>
+<p>Your HTTP HOST: <b>{{ request.META.HTTP_HOST }}</b></p>
+{% include "home/includes/include_to_home.html" %}
+{% endblock %}

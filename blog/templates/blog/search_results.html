@@ -1,0 +1,19 @@
+<html>
+    <head>
+    <title>Post Search</title>
+    </head>
+    <body>
+        <p>You searched for: <strong>{{ query }}</strong></p>
+
+        {% if posts %}
+            <p>Found {{ posts|length }} post {{ posts|pluralize }}.</p>
+            <ul>
+                {% for post in posts %}
+                <li><a href='/blog/{{post.id}}'>{{ post.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No posts matched your search criteria.</p>
+        {% endif %}
+    </body>
+</html>

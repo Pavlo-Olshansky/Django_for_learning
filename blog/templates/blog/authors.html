@@ -1,0 +1,13 @@
+{% extends 'home/header.html' %}
+
+{% block content %}
+    <p>asdsadas</p>
+    <h3>autor title: {{author.title}}</h3>
+    <h6>author post: {{author.post}}</h6>
+
+    {% for author in object_list %}
+        <p>author: {{ author.title }}</p>
+        <p>post: {{ author.post }}</p>
+    {% endfor %}
+
+{% endblock %}

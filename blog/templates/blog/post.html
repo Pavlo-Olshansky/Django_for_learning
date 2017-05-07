@@ -1,0 +1,10 @@
+{% extends 'home/header.html' %}
+
+{% block content %}
+    <p>asdsadas</p>
+    <h3>{{post_blog.title}}</h3>
+    <h6>on {{post_blog.time|date}}</h6>
+    {{post_blog.body|safe|linebreaks}}
+
+
+{% endblock %}
