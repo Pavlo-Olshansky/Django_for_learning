@@ -1,10 +1,20 @@
 {% extends "home/header.html" %}
 
 {% block content %}
+    {% if username %}
+        <h2>Hi {{ username }}! You are logged!. Logined count: {{ count }}</h2>
+    {% else %}
+        <h2>Hi anonymous! You are not logged. Not logined count: {{ not_count }}</h2>
+    {% endif %}
+
+    {{ message }}
     <p>Choose post:</p>
     {% for one_post in posts %}
-        <li>Choose <a href="/blog/my_view_choose/?favotire={{ one_post }}">{{ one_post }}</a></li>
+        <li>Choose <a href="/blog/my_view/?favotire={{ one_post }}">{{ one_post }}</a></li>
     {% endfor %}
+
+{% endblock %}
+
 
 {##}
 {#  <form action="" method="post">#}
@@ -17,4 +27,3 @@
 {#    <input type="hidden" name="next" value="{{ next|escape }}" />#}
 {#  </form>#}
 
-{% endblock %}

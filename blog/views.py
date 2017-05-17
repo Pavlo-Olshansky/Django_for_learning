@@ -9,7 +9,8 @@ from .form import *
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.cache import cache_page
-
+from django.core.cache import cache
+import time
 
 class Post_list(ListView):
     model = Post_blog
@@ -37,6 +38,7 @@ def search(request):
 
 
 def contact(request):
+    congrat_message = None
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
@@ -45,70 +47,119 @@ def contact(request):
                 cd['subject'],
                 cd['message'],
                 cd.get('email', 'pavlopavlo2012@mail.ru'),
-                ['siteowner@example.com'],
+                ['pavlo.olshansky@gmail.com'],
             )
-            return HttpResponseRedirect('/contact/thanks/')
+            congrat_message = 'Thanks for the message! Send another?'
+            # return HttpResponseRedirect('/blog/contact_form.html', {'congrat_message': 'Thanks for the message! Send another?'})
     else:
         form = ContactForm(
             initial={'subject': 'I love your site!'}
         )
-    return render(request, 'blog/contact_form.html', {'form': form})
+
+    return render(request, 'blog/contact_form.html', {'form': form,
+                                                      'congrat_message': congrat_message})
 
 class Authors(ListView):
     model = Author
     template_name = 'blog/authors.html'
 
-@csrf_protect
-@cache_page(60 * 15)  # but better to cache view in URLs
+
+from django.utils.translation import ugettext as _
+
+# @csrf_protect
+# @cache_page(60 * 15)  # but better to cache view in URLs
 def my_view(request):
     context = {}
-    # request.session['posts'] = Post_blog.objects.all()
-    # context['posts'] = request.session['posts']
+
     context['posts'] = Post_blog.objects.filter()
     if request.user.is_authenticated():
-        # username = request.session['username']
+        context['username'] = request.user.get_username()
+
         if 'count' in request.session:
             request.session['count'] += 1
         else:
             request.session['count'] = 1
         context['count'] = request.session['count']
 
-        if 'favotire' in request.session:
+        if "favotire" in request.GET:
+            request.session['favotire'] = request.GET['favotire']
             context['favotire'] = request.session['favotire']
-            context['message'] = "Your current blog is %s " % request.session["favotire"]
+
+            # Translators: This message appears on the home page only
+            context['message'] = _("not log Your current blog is %s " % request.session["favotire"])
+
+
+        elif 'favotire' in request.session:
+            context['favotire'] = request.session['favotire']
+
+            # Translators: This message appears on the home page only
+            context['message'] = _("log Your current blog is %s " % request.session["favotire"])
         else:
             context['favotire'] = None
-            context['message'] = "You don't have a favorite blog."
+            context['message'] = "log You don't have a favorite blog."
 
         # return HttpResponse('You are logged, count={}'.format(request.session['count']), request.session['count'])
         return render (request, 'blog/my_test_view.html', context)
     else:
+        context['username'] = None
+        print(context['username'])
         if 'not_count' in request.session:
             request.session['not_count'] += 1
         else:
             request.session['not_count'] = 1
-        return HttpResponse('You are not logged. Not logined count: {}'.format(request.session['not_count']), request.session['not_count'])
+
+        if "favotire" in request.GET:
+            request.session['favotire'] = request.GET['favotire']
+            context['favotire'] = request.session['favotire']
+            context['message'] = "not log Your current blog is %s " % request.session["favotire"]
+
+        elif 'favotire' in request.session:
+            context['favotire'] = request.session['favotire']
+            context['message'] = "not log Your current blog is %s " % request.session["favotire"]
+        else:
+            context['favotire'] = None
+            context['message'] = "not log You don't have a favorite blog."
+
+        context['not_count'] = request.session['not_count']
+        return render (request, 'blog/my_test_view.html', context)
 
 def my_view_choose(request):
     context = {}
 
     context['posts'] = Post_blog.objects.filter()
-    if 'favotire' in request.session:
-        context['favotire'] = request.session['favotire']
-        context['message'] = "Your current blog is %s " % request.session["favotire"]
-    else:
-        context['favotire'] = None
-        context['message'] = "You don't have a favotire blog."
+    context['username'] = request.user.get_username()
+
+    # if 'favotire' in request.session:
+    #     context['favotire'] = request.session['favotire']
+    #     context['message'] = "Your current blog is %s " % request.session["favotire"]
+    # else:
+    #     context['favotire'] = None
+    #     context['message'] = "You don't have a favotire blog."
+
+    context['favotire'] = request.session['favotire']
 
     if "favotire" in request.GET:
         request.session['favotire'] = request.GET['favotire']
-        return HttpResponseRedirect('/blog/my_view')
+        context['favotire'] = request.session['favotire']
+        context['message'] = "not log Your current blog is %s " % request.session["favotire"]
+
+    elif request.session.has_key('favorite'):
+        context['favotire'] = request.session['favotire']
+        context['message'] = "not log Your current blog is %s " % request.session["favotire"]
+
     else:
-        return render(request, 'blog/my_test_view_choose.html', context)
+        # context['favotire'] = request.session['favotire']
+        # context['message'] = "none Your current blog is %s " % request.session["favotire"]
+        context['message'] = 'Choose your favorite !'
+    return render(request, 'blog/my_test_view_choose.html', context)
 
     # return HttpResponse('You are logged, count={}'.format(request.session['count']), request.session['count'])
 
 
+# @csrf_protect
+from django.views.decorators.csrf import csrf_exempt
+
+# @csrf_exempt
 @csrf_protect
 def register(request):
     if request.method == 'POST':
@@ -223,6 +274,63 @@ def img_downloader(request):
     response['Content-Disposition'] = 'attachment; filename="Downloaded.png"'
 
     return response
+
+
+from django.utils.translation import ugettext as _
+def internalization(request):
+    from django.utils import translation
+    user_language = 'fr'
+    translation.activate(user_language)
+    request.session[translation.LANGUAGE_SESSION_KEY] = user_language
+
+    context = {}
+    year = [2007]
+    context['year'] = year
+    years = (2007, 2008, 2009)
+    context['count_years'] = len(years)
+    context['count_year'] = len(year)
+    context['years'] = years
+    price_per_year = 20
+    context['price_per_year'] = price_per_year
+    context['hello'] = _("привіт")
+
+    return render(request, 'blog/internalization/internalization.html', context)
+
+from django.utils.translation import ugettext as _
+from django.http import HttpResponse
+
+def test(request):
+    output = _("Welcome to my site.")
+    return HttpResponse(output)
+
+
+# -------------------------SECURITY--------------------------------------
+
+# TEMPLATES
+#  http://djangobook.com/security-in-django/
+# < form action = "." method = "post" > { % csrf_token %}
+
+from django.views.decorators.cache import cache_page
+# from django.views.decorators.csrf import csrf_protect
+# from django.views.decorators.csrf import csrf_exempt
+#
+# @cache_page(60 * 15)
+# @csrf_protect
+def my_view_2(request):
+    pass
+
+# @requires_csrf_token
+# @csrf_exempt # pass the csrf
+def my_view_3(request):
+    return HttpResponse('Hello world')
+
+from django.views.decorators.clickjacking import xframe_options_exempt
+@xframe_options_exempt
+# @xframe_options_deny
+# @xframe_options_sameorigin  # browser will only load the resource in a frame if the request originated from the same site.
+def ok_to_load_in_a_frame(request):
+    return HttpResponse("This page is safe to load in a frame on any site.")
+
 
 
 # def display_meta(request):

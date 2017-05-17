@@ -1,11 +1,18 @@
 import datetime
 from django.utils import timezone
 from django.db import models
+from django.utils.translation import pgettext
+from django.utils.translation import ugettext_lazy as _
+
+
 
 class Post_blog(models.Model):
-    title = models.CharField(max_length = 140)
+    title = models.CharField(help_text=pgettext('help text for MyThing model',
+                                                'This is the help text'),
+                             max_length = 140)
     time = models.DateField()
-    image = models.ImageField(upload_to='Imagies_from_site', blank=True, null=True)  # blank - field optional
+    image = models.ImageField(help_text=_('help text'),
+                              upload_to='Imagies_from_site', blank=True, null=True)  # blank - field optional
     body = models.TextField()
 
     def recent_publication(self):

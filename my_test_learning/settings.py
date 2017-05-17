@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# 'django.core.mail.backends.console.EmailBackend'
+# 'django.core.mail.backends.smtp.EmailBackend'
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,6 +45,7 @@ INSTALLED_APPS = [
     'contact',
     'about',
     'blog',
+    'test_view',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,17 +60,27 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # X_FRAME_OPTIONS = 'DENY'
 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'my_test_learning.urls'
+
+from django.utils.translation import ugettext_lazy as _
+
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+    ('ru', 'Russian'),
+    ('en', 'English'),
+)
 
 TEMPLATES = [
     {
@@ -88,6 +104,20 @@ WSGI_APPLICATION = 'my_test_learning.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
+# POSTGRE
+import psycopg2
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'django_test_db',
+#         'USER': 'django_test',
+#         'PASSWORD': '123zxctest',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+
+# # SQLITE3
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -151,11 +181,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'nl'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True  # the generated cache key will include the name of the active language.
+USE_I18N = True  # the generated cache key will include the name of the active language. - internationalization
 
 USE_L10N = True  # Cache keys also include the active language
 
@@ -172,4 +203,13 @@ STATICFILES_DIRS = (
   os.path.join(BASE_DIR, 'static'),
 )
 
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
+# SECURE
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True # This is recommended (assuming all subdomains are served exclusively using HTTPS),
+                                      # otherwise your site may still be vulnerable via an insecure connection to a subdomain.

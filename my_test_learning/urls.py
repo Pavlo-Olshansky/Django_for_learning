@@ -25,8 +25,16 @@ urlpatterns = [
     url(r'^', include('home.urls')),
     url(r'^contact/', include('contact.urls')),
     url(r'^about/', include('about.urls')),
-    url(r'^blog/', include('blog.urls')),
+    url(r'^test/', include('test_view.urls')),
+    url(r'^blog/', include('blog.urls', namespace='blog')),
 ]
 
+# en-us/news
+from django.conf.urls.i18n import i18n_patterns
+from django.utils.translation import ugettext_lazy as _
+urlpatterns += i18n_patterns(
+    url(_(r'^news/'), include('blog.urls', namespace='news')),
+
+)
 # if settings.DEBUG:
 #     urlpatterns += [url(r'^debuginfo/$', views.debug),]

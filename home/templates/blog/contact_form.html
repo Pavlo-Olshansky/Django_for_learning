@@ -4,6 +4,11 @@
 </head>
 <body>
     <h1>Contact us</h1>
+
+    {% if congrat_message %}
+    <b>{{ congrat_message }}</b>
+    {% endif %}
+
 <style type="text/css">
     ul.errorlist {
         margin: 0;

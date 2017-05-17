@@ -1,9 +1,14 @@
 {% extends "home/header.html" %}
 
-{% load cache %}
-{% cache 500 content %}
+{#{% load cache %}#}
+{#{% cache 500 content %}#}
 {% block content %}
-    <h2>You are not logged. Not logined count: {{ count }}</h2>
+    {% if username %}
+        <h2>Hi {{ username }}! You are logged!. Logined count: {{ count }}</h2>
+    {% else %}
+        <h2>Hi anonymous! You are not logged. Not logined count: {{ not_count }}</h2>
+    {% endif %}
+
 
     <p>{{ message }}</p>
     <p><a href="/blog/my_view_choose">Choose another block</a></p>
@@ -24,4 +29,4 @@
 {#  </form>#}
 
 {% endblock %}
-{% endcache %}
+{#{% endcache %}#}

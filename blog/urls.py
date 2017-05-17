@@ -23,13 +23,18 @@ urlpatterns = [
     url(r'^register/$', register),
 
     url(r'^my_view/$', my_view),
-    url(r'^my_view_choose/$', cache_page(60 * 15)(my_view_choose)),
+    # url(r'^my_view_choose/$', cache_page(60 * 15)(my_view_choose)),
+    url(r'^my_view_choose/$', my_view_choose),
     url(r'^register_success/$', register_success),
 
     url(r'^big_csv/$', some_streaming_csv_view),
     url(r'^csv/$', download_csv),
     url(r'^pdf/$', pdf_downloader),
     url(r'^img/$', img_downloader),
+
+    url(r'^internalization/$', internalization),
+    url(r'^test/$', test),
+
 
 
     # url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},

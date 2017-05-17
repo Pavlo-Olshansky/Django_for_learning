@@ -1,0 +1,16 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!-- Current language: {{ LANGUAGE_CODE }} -->
+
+{% blocktrans count all_years=count_years %}
+  ONE>That will cost $ {{ price_per_year }} per year.
+{% plural %}
+  That will cost $ {{ price_per_year }} per {{ all_years }}  years.
+{% endblocktrans %}
+
+{#{% some_tag _("Page not found") value|yesno:_("yes,no") %}#}
+{% trans "hello" %}
+{#{% trans price_per_year %}#}
+{#{{ price_per_year }}#}
+
+
